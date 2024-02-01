@@ -10,10 +10,10 @@ import "fmt"
 //
 //	for _, num := range nums {
 //		wg.Add(1)
-//		go func(group *sync.WaitGroup, num int) {
-//			defer group.Done()
+//		go func(num int) {
+//			defer wg.Done()
 //			write <- num * num
-//		}(&wg, num)
+//		}(num)
 //	}
 //
 //	wg.Wait()
