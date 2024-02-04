@@ -33,7 +33,7 @@ func main() {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT)
 
-	// Горутина для отслеживания зигнала
+	// Горутина для отслеживания cигнала
 	go func() {
 		<-sigs
 		fmt.Println()
@@ -67,7 +67,7 @@ func worker(ctx context.Context, wg *sync.WaitGroup, data <-chan interface{}, id
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Println("Воркер завершает работу")
+			fmt.Printf("Воркер %d завершает работу\n", id)
 			return
 		case msg := <-data:
 			fmt.Fprintf(os.Stdout, "worker %d: %s\n", id, msg)
