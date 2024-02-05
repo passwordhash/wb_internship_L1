@@ -59,7 +59,7 @@ func withCancelContext() {
 
 // 3: завершения с помощью контекста с таймаутом
 //
-// Горутина завершить свое выполнение через 3 секунды
+// Горутина завершит свое выполнение через 3 секунды
 func withCancelTimeout() {
 	ctx, cancel := context.WithTimeout(context.TODO(), 3*time.Second)
 	defer cancel()
@@ -82,7 +82,7 @@ func withCancelTimeout() {
 
 // 4: завершение горутины с помощью канала сигналов
 //
-// Горутина будет работать пока не будет нажат ctrl + C
+// Горутина будет работать пока не будет нажатa ctrl + C
 func withChanOfSigs() {
 	sigs := make(chan os.Signal, 1)
 	signal.Notify(sigs, syscall.SIGINT)
@@ -100,5 +100,38 @@ func withChanOfSigs() {
 	}()
 
 	<-sigs
+	fmt.Println("End of main goroutine")
+}
+
+// 5: завершнеие горутины с завершением main
+func main_() {
+	go func() {
+		for {
+			fmt.Println("doing something ...")
+			time.Sleep(500 * time.Millisecond)
+		}
+	}()
+
+	time.Sleep(6 * time.Second)
+	fmt.Println("End of main goroutine")
+}
+
+// 6: завершение горутины по истечении таймера
+func withTimer() {
+	timer := time.NewTimer(5 * time.Second)
+
+	go func(timer *time.Timer) {
+		for {
+			select {
+			case <-timer.C:
+				return
+			default:
+				fmt.Println("doing something ...")
+				time.Sleep(500 * time.Millisecond)
+			}
+		}
+	}(timer)
+
+	<-timer.C
 	fmt.Println("End of main goroutine")
 }
